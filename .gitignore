@@ -1,0 +1,9 @@
+# Intellij folder
+.idea/
+
+# Gradle folder
+.gradle/
+gradle/
+build/
+gradlew
+gradlew.bat
