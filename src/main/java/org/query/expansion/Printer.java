@@ -24,6 +24,13 @@ public class Printer {
     private static void prettyPrintPhotoData(Photo photo) {
         System.out.println("---------------");
         System.out.println(photo.getTitle());
+
+        String tags = "Tags: ";
+        for (String tag : photo.getTags()) {
+            tags += tag + ", ";
+        }
+        System.out.println(tags);
+
         System.out.println("---------------");
     }
 }

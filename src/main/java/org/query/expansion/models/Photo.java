@@ -7,6 +7,7 @@ import org.apache.lucene.document.TextField;
 import org.query.expansion.values.PhotoFields;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Photo {
     private String title;
@@ -26,20 +27,22 @@ public class Photo {
     public Photo(Document document) {
         title = document.get(PhotoFields.TITLE);
         url = document.get(PhotoFields.URL);
-        tags = new ArrayList<String>();
+        tags = new ArrayList<String>(Arrays.asList(document.getValues(PhotoFields.TAGS)));
     }
 
     public Document getLuceneDocument() {
         Document document = new Document();
 
-        Field urlField = new StringField(PhotoFields.URL, url, Field.Store.YES);
+        Field urlField = new StringField(PhotoFields.URL, url, Field.Store.NO);
         document.add(urlField);
 
         Field titleField = new TextField(PhotoFields.TITLE, title, Field.Store.YES);
         document.add(titleField);
 
-        Field tagsField = new StringField(PhotoFields.TAGS, tags.toString(), Field.Store.YES);
-        document.add(tagsField);
+        for (String tag : tags) {
+            Field tagsField = new StringField(PhotoFields.TAGS, tag, Field.Store.YES);
+            document.add(tagsField);
+        }
 
         return document;
     }

@@ -52,8 +52,8 @@ public class main {
     }
 
     private static void search(Directory index) throws IOException, ParseException {
-        String queryString = "title";
-        Term term = new Term(PhotoFields.TITLE, queryString);
+        String queryString = "sky";
+        Term term = new Term(PhotoFields.TAGS, queryString);
         Query query = new TermQuery(term);
         int hitsPerPage = 10;
 
@@ -67,7 +67,12 @@ public class main {
     }
 
     private static void indexDocument(IndexWriter writer) throws IOException {
-        Photo photo = new Photo("This is a title", "http://www.vg.no", new ArrayList<String>());
+        ArrayList<String> tags = new ArrayList<String>();
+        tags.add("sky");
+        tags.add("blue");
+        tags.add("clouds");
+
+        Photo photo = new Photo("This is a title", "http://www.vg.no", tags);
 
         writer.addDocument(photo.getLuceneDocument());
     }
