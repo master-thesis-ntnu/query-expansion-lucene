@@ -1,73 +1,67 @@
 package org.query.expansion.models;
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
+import org.apache.lucene.document.*;
 import org.query.expansion.values.PhotoFields;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Photo {
+    private String id;
+    @SerializedName("dateuploaded")
+    private String dateUploaded;
     private String title;
     private String url;
-    private ArrayList<String> tags;
-
-    public Photo() {
-
-    }
-
-    public Photo(String title, String url, ArrayList<String> tags) {
-        this.title = title;
-        this.url = url;
-        this.tags = tags;
-    }
+    private ArrayList<Tag> tags;
 
     public Photo(Document document) {
         title = document.get(PhotoFields.TITLE);
         url = document.get(PhotoFields.URL);
-        tags = new ArrayList<String>(Arrays.asList(document.getValues(PhotoFields.TAGS)));
+        tags = new ArrayList<Tag>();
+
+        for(String tag: document.getValues(PhotoFields.TAGS)) {
+            tags.add(new Tag(tag));
+        }
     }
 
     public Document getLuceneDocument() {
         Document document = new Document();
 
-        Field urlField = new StringField(PhotoFields.URL, url, Field.Store.NO);
-        document.add(urlField);
+        Field idField = new StringField(PhotoFields.ID, id, Field.Store.YES);
+        document.add(idField);
+
+        Field dateUploadedField = new LongPoint(PhotoFields.DATE_UPLOADED, getDateUploadedAsLong());
+        document.add(dateUploadedField);
+
+        //Field urlField = new StringField(PhotoFields.URL, url, Field.Store.NO);
+        //document.add(urlField);
 
         Field titleField = new TextField(PhotoFields.TITLE, title, Field.Store.YES);
         document.add(titleField);
 
-        for (String tag : tags) {
-            Field tagsField = new StringField(PhotoFields.TAGS, tag, Field.Store.YES);
+        for (Tag tag : tags) {
+            Field tagsField = new StringField(PhotoFields.TAGS, tag.getContent(), Field.Store.YES);
             document.add(tagsField);
         }
 
         return document;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public ArrayList<String> getTags() {
+    public ArrayList<Tag> getTags() {
         return tags;
-    }
-
-    public void setTags(ArrayList<String> tags) {
-        this.tags = tags;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    private long getDateUploadedAsLong() {
+        return Long.parseLong(dateUploaded);
+    }
+
+    public static Photo fromJson(String jsonString) {
+        Gson gson = new Gson();
+        return gson.fromJson(jsonString, Photo.class);
     }
 }

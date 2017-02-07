@@ -13,13 +13,13 @@ public class Main {
         Indexer indexer = new Indexer(index);
 
         try {
-            indexer.indexDocumentsFromFile("");
-            search(index);
+            indexer.indexDocumentsFromFile("/home/jonas/git/query-expansion/data/flickr-parsed.data");
+            //search(index);
         } catch (IOException ioException) {
             ioException.printStackTrace();
-        } catch (ParseException parseException) {
+        } /*catch (ParseException parseException) {
             parseException.printStackTrace();
-        }
+        }*/
     }
 
     private static void search(Directory index) throws IOException, ParseException {

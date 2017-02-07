@@ -6,11 +6,14 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.query.expansion.models.Photo;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.InputStreamReader;
 
 public class Indexer {
     private Directory index;
+    private IndexWriter indexWriter;
 
     public Indexer(Directory index) {
         this.index = index;
@@ -21,31 +24,38 @@ public class Indexer {
 
         StandardAnalyzer analyzer = new StandardAnalyzer();
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
-        IndexWriter writer = new IndexWriter(index, config);
+        indexWriter = new IndexWriter(index, config);
 
         System.out.println("Indexing documents");
         long startTime = System.currentTimeMillis();
 
-        indexDocument(writer);
+        indexPhotosFromFile(filePath);
+        //indexDocument(writer);
 
         long endTime = System.currentTimeMillis();
-        long numberOfDocuments = writer.numDocs();
+        long numberOfDocuments = indexWriter.numDocs();
         long elapsedTime = endTime - startTime;
 
-        writer.close();
+        indexWriter.close();
 
         System.out.println("Indexing documents took " + elapsedTime + " ms");
         System.out.println("Number of documents: " + numberOfDocuments);
     }
 
-    private static void indexDocument(IndexWriter writer) throws IOException {
-        ArrayList<String> tags = new ArrayList<String>();
-        tags.add("sky");
-        tags.add("blue");
-        tags.add("clouds");
+    private void indexPhotosFromFile(String filePath) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
 
-        Photo photo = new Photo("This is a title", "http://www.vg.no", tags);
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            System.out.println(line);
+            indexDocument(Photo.fromJson(line));
+            break;
+        }
 
-        writer.addDocument(photo.getLuceneDocument());
+        bufferedReader.close();
+    }
+
+    private void indexDocument(Photo photo) throws IOException {
+        indexWriter.addDocument(photo.getLuceneDocument());
     }
 }

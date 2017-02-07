@@ -5,6 +5,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.query.expansion.models.Photo;
+import org.query.expansion.models.Tag;
 
 import java.io.IOException;
 
@@ -26,7 +27,7 @@ public class Printer {
         System.out.println(photo.getTitle());
 
         String tags = "Tags: ";
-        for (String tag : photo.getTags()) {
+        for (Tag tag : photo.getTags()) {
             tags += tag + ", ";
         }
         System.out.println(tags);
