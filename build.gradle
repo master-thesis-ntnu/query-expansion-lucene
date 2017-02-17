@@ -15,6 +15,7 @@ dependencies {
     compile "org.apache.lucene:lucene-core:${luceneVersion}"
     compile "org.apache.lucene:lucene-analyzers-common:${luceneVersion}"
     compile "org.apache.lucene:lucene-backward-codecs:${luceneVersion}"
+    compile "org.apache.lucene:lucene-facet:${luceneVersion}"
     compile "org.apache.lucene:lucene-grouping:${luceneVersion}"
     compile "org.apache.lucene:lucene-highlighter:${luceneVersion}"
     compile "org.apache.lucene:lucene-join:${luceneVersion}"

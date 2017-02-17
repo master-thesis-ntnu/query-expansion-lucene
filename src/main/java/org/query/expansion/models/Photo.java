@@ -3,8 +3,12 @@ package org.query.expansion.models;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import org.apache.lucene.document.*;
+import org.apache.lucene.facet.FacetField;
+import org.apache.lucene.facet.FacetsConfig;
+import org.apache.lucene.index.IndexWriter;
 import org.query.expansion.values.PhotoFields;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Photo {
@@ -25,8 +29,9 @@ public class Photo {
         }
     }
 
-    public Document getLuceneDocument() {
+    public void writePhotoToIndex(IndexWriter indexWriter) throws IOException {
         Document document = new Document();
+        FacetsConfig facetsConfig = getTagsFacetConfig();
 
         Field idField = new StringField(PhotoFields.ID, id, Field.Store.YES);
         document.add(idField);
@@ -40,12 +45,27 @@ public class Photo {
         Field titleField = new TextField(PhotoFields.TITLE, title, Field.Store.YES);
         document.add(titleField);
 
-        for (Tag tag : tags) {
-            Field tagsField = new StringField(PhotoFields.TAGS, tag.getContent(), Field.Store.YES);
-            document.add(tagsField);
+        String[] tagsStringArray = new String[tags.size()];
+        for (int i = 0; i < tagsStringArray.length; i++) {
+            // Field tagsField = new StringField(PhotoFields.TAGS, tag.getContent(), Field.Store.YES);
+            //document.add(tagsField);
+            tagsStringArray[i] = tags.get(i).getContent();
         }
+        FacetField tagsFacetField = new FacetField(PhotoFields.TAGS, tagsStringArray);
+        document.add(tagsFacetField);
 
-        return document;
+        indexWriter.addDocument(facetsConfig.build(document));
+    }
+
+    private FacetsConfig getTagsFacetConfig() {
+        FacetsConfig config = new FacetsConfig();
+        config.setIndexFieldName(PhotoFields.TAGS, PhotoFields.TAGS_FACET);
+
+        return config;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public ArrayList<Tag> getTags() {

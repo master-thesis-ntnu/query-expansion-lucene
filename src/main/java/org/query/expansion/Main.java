@@ -8,13 +8,18 @@ import org.apache.lucene.store.RAMDirectory;
 import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Directory index = new RAMDirectory();
-        Indexer indexer = new Indexer(index);
+        Directory taxonamyIndex = new RAMDirectory();
+        Indexer indexer = new Indexer(index, taxonamyIndex);
+        Searcher searcher = new Searcher(index);
 
         try {
             indexer.indexDocumentsFromFile("/home/jonas/git/query-expansion/data/flickr-parsed.data");
-            //search(index);
+
+            String queryString = "square";
+            TopDocs topDocuments = searcher.search(queryString);
+            searcher.printSearchResults(topDocuments);
         } catch (IOException ioException) {
             ioException.printStackTrace();
         } /*catch (ParseException parseException) {
