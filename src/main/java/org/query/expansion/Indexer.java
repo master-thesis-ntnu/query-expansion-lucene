@@ -36,20 +36,25 @@ public class Indexer {
         long numberOfDocuments = indexWriter.numDocs();
         long elapsedTime = endTime - startTime;
 
+        indexWriter.commit();
         indexWriter.close();
 
-        System.out.println("Indexing documents took " + elapsedTime + " ms");
-        System.out.println("Number of documents: " + numberOfDocuments);
+        System.out.println("Indexing " + numberOfDocuments + " documents took " + elapsedTime + " ms");
     }
 
     private void indexPhotosFromFile(String filePath) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
 
         String line;
+        int counter = 0;
         while ((line = bufferedReader.readLine()) != null) {
-            System.out.println(line);
             indexDocument(Photo.fromJson(line));
-            break;
+
+            if (counter == 0) {
+                break;
+            }
+
+            counter++;
         }
 
         bufferedReader.close();

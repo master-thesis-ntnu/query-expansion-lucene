@@ -15,15 +15,20 @@ public class Main {
         try {
             indexer.indexDocumentsFromFile("/home/jonas/git/query-expansion/data/flickr-parsed.data");
             //search(index);
+            queryExpansionSearch(index);
         } catch (IOException ioException) {
             ioException.printStackTrace();
-        } /*catch (ParseException parseException) {
-            parseException.printStackTrace();
-        }*/
+        }
+    }
+
+    private static void queryExpansionSearch(Directory index) throws IOException {
+        String queryString = "square";
+        Searcher searcher = new Searcher(index);
+        TopDocs topDocuments = searcher.search(queryString);
     }
 
     private static void search(Directory index) throws IOException, ParseException {
-        String queryString = "sky";
+        String queryString = "square";
         Searcher searcher = new Searcher(index);
         TopDocs topDocuments = searcher.search(queryString);
         searcher.printSearchResults(topDocuments);

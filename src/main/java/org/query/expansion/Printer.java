@@ -28,7 +28,7 @@ public class Printer {
 
         String tags = "Tags: ";
         for (Tag tag : photo.getTags()) {
-            tags += tag + ", ";
+            tags += tag.getContent() + ", ";
         }
         System.out.println(tags);
 
