@@ -13,8 +13,8 @@ public class Main {
 
         try {
             indexer.indexDocumentsFromFile("/home/jonas/git/query-expansion/data/flickr-parsed.data");
-            search(index);
-            // queryExpansionSearch(index);
+            //search(index);
+            queryExpansionSearch(index);
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
@@ -23,7 +23,13 @@ public class Main {
     private static void queryExpansionSearch(Directory index) throws IOException {
         String queryString = "square";
         Searcher searcher = new Searcher(index);
+
+        searcher.openIndexReaderAndSearcher();
         Photo[] photos = searcher.search(queryString);
+        QueryExpansion queryExpansion = new QueryExpansion(photos, searcher);
+        queryExpansion.getQueryExpandedTerms();
+
+        searcher.closeIndexReader();
     }
 
     private static void search(Directory index) throws IOException {

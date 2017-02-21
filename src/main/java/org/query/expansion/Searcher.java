@@ -28,20 +28,20 @@ public class Searcher {
 
     public Photo[] search(String queryString, int numberOfResults) throws IOException {
         Query query = getQueryFromQueryString(queryString);
-
-        openIndexReaderAndSearcher();
         TopDocs topDocuments = indexSearcher.search(query, numberOfResults);
 
-        Photo[] photos = getPhotosFromTopDocs(topDocuments);
-        closeIndexReader();
-
-        return photos;
+        return getPhotosFromTopDocs(topDocuments);
     }
 
     private Query getQueryFromQueryString(String queryString) {
         Term term = new Term(PhotoFields.TAGS, queryString);
 
         return new TermQuery(term);
+    }
+
+    public int getNumberOfTimesInCollection(String term) throws IOException {
+        return indexReader.docFreq(new Term(term));
+        // indexReader.getSumTotalTermFreq();
     }
 
     private Photo[] getPhotosFromTopDocs(TopDocs topDocuments) throws IOException {
@@ -67,12 +67,12 @@ public class Searcher {
         }
     }
 
-    private void openIndexReaderAndSearcher() throws IOException {
+    public void openIndexReaderAndSearcher() throws IOException {
         indexReader = DirectoryReader.open(index);
         indexSearcher = new IndexSearcher(indexReader);
     }
 
-    private void closeIndexReader() throws IOException {
+    public void closeIndexReader() throws IOException {
         indexReader.close();
     }
 }

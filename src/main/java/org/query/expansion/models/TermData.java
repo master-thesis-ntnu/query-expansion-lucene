@@ -4,6 +4,7 @@ public class TermData {
     private String term;
     private int numberOfTimesInTopKDocuments;
     private int numberOfTimesInCollection;
+    private double klScore;
 
     public TermData(String term) {
         this.term = term;
@@ -34,7 +35,7 @@ public class TermData {
         return "TermData{" +
                 "term='" + term + '\'' +
                 ", numberOfTimesInTopKDocuments=" + numberOfTimesInTopKDocuments +
-                ", numberOfTimesInCollection=" + numberOfTimesInCollection +
+                ", getNumberOfTimesInCollection=" + numberOfTimesInCollection +
                 '}';
     }
 }
