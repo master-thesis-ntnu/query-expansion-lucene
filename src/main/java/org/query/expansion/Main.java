@@ -1,9 +1,8 @@
 package org.query.expansion;
 
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
+import org.query.expansion.models.Photo;
 
 import java.io.IOException;
 
@@ -14,8 +13,8 @@ public class Main {
 
         try {
             indexer.indexDocumentsFromFile("/home/jonas/git/query-expansion/data/flickr-parsed.data");
-            //search(index);
-            queryExpansionSearch(index);
+            search(index);
+            // queryExpansionSearch(index);
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
@@ -24,13 +23,13 @@ public class Main {
     private static void queryExpansionSearch(Directory index) throws IOException {
         String queryString = "square";
         Searcher searcher = new Searcher(index);
-        TopDocs topDocuments = searcher.search(queryString);
+        Photo[] photos = searcher.search(queryString);
     }
 
-    private static void search(Directory index) throws IOException, ParseException {
+    private static void search(Directory index) throws IOException {
         String queryString = "square";
         Searcher searcher = new Searcher(index);
-        TopDocs topDocuments = searcher.search(queryString);
-        searcher.printSearchResults(topDocuments);
+        Photo[] photos = searcher.search(queryString);
+        searcher.printSearchResults(photos);
     }
 }

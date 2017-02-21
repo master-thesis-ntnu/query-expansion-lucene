@@ -1,25 +1,15 @@
 package org.query.expansion;
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
 import org.query.expansion.models.Photo;
 import org.query.expansion.models.Tag;
 
-import java.io.IOException;
-
 public class Printer {
-    public static void printResult(TopDocs topDocuments, IndexSearcher searcher) throws IOException {
-        for (ScoreDoc scoreDocument : topDocuments.scoreDocs) {
-            int documentId = scoreDocument.doc;
-            Document document = searcher.doc(documentId);
-            Photo photo = new Photo(document);
-
+    public static void printResult(Photo[] photos) {
+        for (Photo photo : photos) {
             prettyPrintPhotoData(photo);
         }
 
-        System.out.println("Number of hits in the result: " + topDocuments.scoreDocs.length);
+        System.out.println("Number of hits in the result: " + photos.length);
     }
 
     private static void prettyPrintPhotoData(Photo photo) {
