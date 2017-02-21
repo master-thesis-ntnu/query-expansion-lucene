@@ -3,8 +3,10 @@ package org.query.expansion;
 import org.query.expansion.models.Photo;
 import org.query.expansion.models.Tag;
 import org.query.expansion.models.TermData;
+import org.query.expansion.singelton.TermValues;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class QueryExpansion {
@@ -28,12 +30,28 @@ public class QueryExpansion {
             e.printStackTrace();
         }
 
-        System.out.println("Terms in hasmap: " + terms.size());
+        TermData[] calculatedKlScores = new TermData[terms.size()];
+
+        int index = 0;
+        for (TermData termData : terms.values()) {
+            termData.calculateKlScore();
+            calculatedKlScores[index] = termData;
+
+            index++;
+        }
+
+        Arrays.sort(calculatedKlScores);
+
+        for (TermData termData : calculatedKlScores) {
+            System.out.println(termData.getTerm() + ": " + termData.getKlScore());
+        }
+
+        System.out.println("Terms in hashmap: " + terms.size());
         System.out.println("Number of terms in top-k documents: " + numberOfTermsInTopKDocuments);
         return null;
     }
 
-    public void generateTermDataFromPhotosArray() throws IOException {
+    private void generateTermDataFromPhotosArray() throws IOException {
 
         for (Photo photo : photos) {
             for (Tag tag : photo.getTags()) {
@@ -50,7 +68,7 @@ public class QueryExpansion {
                 }
             }
 
-            numberOfTermsInTopKDocuments += photo.getTags().size();
+            TermValues.totalNumberOfTermsInTopKDocuments += photo.getTags().size();
         }
     }
 }

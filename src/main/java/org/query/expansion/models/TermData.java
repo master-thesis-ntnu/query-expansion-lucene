@@ -1,6 +1,9 @@
 package org.query.expansion.models;
 
-public class TermData {
+import org.query.expansion.KullbackLeibler;
+import org.query.expansion.singelton.TermValues;
+
+public class TermData implements Comparable<TermData> {
     private String term;
     private int numberOfTimesInTopKDocuments;
     private int numberOfTimesInCollection;
@@ -30,6 +33,19 @@ public class TermData {
         this.numberOfTimesInCollection = numberOfTimesInCollection;
     }
 
+    public void calculateKlScore() {
+        klScore = KullbackLeibler.calculateKullbackLeiblerDistance(
+                numberOfTimesInTopKDocuments,
+                TermValues.totalNumberOfTermsInTopKDocuments,
+                numberOfTimesInCollection,
+                TermValues.totalNumberOfTermsInTopKDocuments
+        );
+    }
+
+    public double getKlScore() {
+        return klScore;
+    }
+
     @Override
     public String toString() {
         return "TermData{" +
@@ -37,5 +53,9 @@ public class TermData {
                 ", numberOfTimesInTopKDocuments=" + numberOfTimesInTopKDocuments +
                 ", getNumberOfTimesInCollection=" + numberOfTimesInCollection +
                 '}';
+    }
+
+    public int compareTo(TermData o) {
+        return (int) (this.getKlScore() - o.getKlScore());
     }
 }
