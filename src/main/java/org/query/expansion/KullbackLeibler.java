@@ -5,8 +5,8 @@ public class KullbackLeibler {
             int numberOfTimesInTopkDocuments, int totalNumberOfTermsInTopKDocuments,
             int numberOfTimesInCollection, int totalNumberOfTermsInCollection) {
 
-        double prel = numberOfTimesInTopkDocuments  / totalNumberOfTermsInTopKDocuments;
-        double pcol = numberOfTimesInCollection     / totalNumberOfTermsInCollection;
+        double prel = (double) numberOfTimesInTopkDocuments  / (double) totalNumberOfTermsInTopKDocuments;
+        double pcol = (double) numberOfTimesInCollection     / (double) totalNumberOfTermsInCollection;
 
         return prel * Math.log(prel / pcol);
     }

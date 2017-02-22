@@ -3,6 +3,7 @@ package org.query.expansion.models;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import org.apache.lucene.document.*;
+import org.query.expansion.TagField;
 import org.query.expansion.values.PhotoFields;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class Photo {
         document.add(titleField);
 
         for (Tag tag : tags) {
-            Field tagsField = new StringField(PhotoFields.TAGS, tag.getContent(), Field.Store.YES);
+            Field tagsField = new TagField(PhotoFields.TAGS, tag.getContent());
             document.add(tagsField);
         }
 

@@ -5,7 +5,7 @@ import org.query.expansion.singelton.TermValues;
 
 public class TermData implements Comparable<TermData> {
     private String term;
-    private int numberOfTimesInTopKDocuments;
+    private int numberOfTimesInTopKDocuments = 1;
     private int numberOfTimesInCollection;
     private double klScore;
 

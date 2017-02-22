@@ -39,9 +39,8 @@ public class Searcher {
         return new TermQuery(term);
     }
 
-    public int getNumberOfTimesInCollection(String term) throws IOException {
-        return indexReader.docFreq(new Term(term));
-        // indexReader.getSumTotalTermFreq();
+    public int getNumberOfTimesInCollection(String field, String term) throws IOException {
+        return (int) indexReader.totalTermFreq(new Term(field, term));
     }
 
     private Photo[] getPhotosFromTopDocs(TopDocs topDocuments) throws IOException {

@@ -4,6 +4,7 @@ import org.query.expansion.models.Photo;
 import org.query.expansion.models.Tag;
 import org.query.expansion.models.TermData;
 import org.query.expansion.singelton.TermValues;
+import org.query.expansion.values.PhotoFields;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -60,7 +61,7 @@ public class QueryExpansion {
                 if (terms.containsKey(term)) {
                     terms.get(term).incrementNumberOfTimesInTopKDocuments();
                 } else {
-                    int numberOfTimesInCollection = searcher.getNumberOfTimesInCollection(term);
+                    int numberOfTimesInCollection = searcher.getNumberOfTimesInCollection(PhotoFields.TAGS, term);
                     TermData termData = new TermData(term);
                     termData.setNumberOfTimesInCollection(numberOfTimesInCollection);
 
