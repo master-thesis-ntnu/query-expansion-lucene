@@ -3,7 +3,6 @@ package org.query.expansion;
 import org.query.expansion.models.Photo;
 import org.query.expansion.models.Tag;
 import org.query.expansion.models.TermData;
-import org.query.expansion.singelton.TermValues;
 import org.query.expansion.values.PhotoFields;
 
 import java.io.IOException;
@@ -13,8 +12,8 @@ import java.util.HashMap;
 public class QueryExpansion {
     private Photo[] photos;
     private HashMap<String, TermData> terms;
-    private int numberOfTermsInTopKDocuments;
-    private int numberOfTermsInCollection = 10;
+    private int totalNumberOfTermsInTopKDocuments;
+    private int totalNumberOfTermsInCollection;
     private Searcher searcher;
 
     public QueryExpansion(Photo[] photos, Searcher searcher) {
@@ -27,6 +26,7 @@ public class QueryExpansion {
     public String[] getQueryExpandedTerms() {
         try {
             generateTermDataFromPhotosArray();
+            totalNumberOfTermsInCollection = searcher.getTotalNumberOfTermsInCollection(PhotoFields.TAGS);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -35,7 +35,7 @@ public class QueryExpansion {
 
         int index = 0;
         for (TermData termData : terms.values()) {
-            termData.calculateKlScore();
+            termData.calculateKlScore(totalNumberOfTermsInTopKDocuments, totalNumberOfTermsInCollection);
             calculatedKlScores[index] = termData;
 
             index++;
@@ -48,7 +48,8 @@ public class QueryExpansion {
         }
 
         System.out.println("Terms in hashmap: " + terms.size());
-        System.out.println("Number of terms in top-k documents: " + numberOfTermsInTopKDocuments);
+        System.out.println("Number of photos in the result: " + photos.length);
+        System.out.println("Number of terms in top-k documents: " + totalNumberOfTermsInTopKDocuments);
         return null;
     }
 
@@ -61,7 +62,7 @@ public class QueryExpansion {
                 if (terms.containsKey(term)) {
                     terms.get(term).incrementNumberOfTimesInTopKDocuments();
                 } else {
-                    int numberOfTimesInCollection = searcher.getNumberOfTimesInCollection(PhotoFields.TAGS, term);
+                    int numberOfTimesInCollection = searcher.getTotalNumberOfTimesInCollection(PhotoFields.TAGS, term);
                     TermData termData = new TermData(term);
                     termData.setNumberOfTimesInCollection(numberOfTimesInCollection);
 
@@ -69,7 +70,7 @@ public class QueryExpansion {
                 }
             }
 
-            TermValues.totalNumberOfTermsInTopKDocuments += photo.getTags().size();
+            totalNumberOfTermsInTopKDocuments += photo.getTags().size();
         }
     }
 }

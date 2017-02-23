@@ -21,7 +21,7 @@ public class Main {
     }
 
     private static void queryExpansionSearch(Directory index) throws IOException {
-        String queryString = "square";
+        String queryString = "square inkwell";
         Searcher searcher = new Searcher(index);
 
         searcher.openIndexReaderAndSearcher();
@@ -33,7 +33,7 @@ public class Main {
     }
 
     private static void search(Directory index) throws IOException {
-        String queryString = "square";
+        String queryString = "square inkwell";
         Searcher searcher = new Searcher(index);
         Photo[] photos = searcher.search(queryString);
         searcher.printSearchResults(photos);

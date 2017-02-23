@@ -5,6 +5,10 @@ public class KullbackLeibler {
             int numberOfTimesInTopkDocuments, int totalNumberOfTermsInTopKDocuments,
             int numberOfTimesInCollection, int totalNumberOfTermsInCollection) {
 
+        if (numberOfTimesInCollection == 0) {
+            return 0;
+        }
+
         double prel = (double) numberOfTimesInTopkDocuments  / (double) totalNumberOfTermsInTopKDocuments;
         double pcol = (double) numberOfTimesInCollection     / (double) totalNumberOfTermsInCollection;
 

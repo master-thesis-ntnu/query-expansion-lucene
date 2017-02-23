@@ -34,13 +34,25 @@ public class Searcher {
     }
 
     private Query getQueryFromQueryString(String queryString) {
-        Term term = new Term(PhotoFields.TAGS, queryString);
+        String[] queryTerms = queryString.split(" ");
+        Term[] terms = new Term[queryTerms.length];
 
-        return new TermQuery(term);
+        for (int i = 0; i < queryTerms.length; i++) {
+            terms[i] = new Term(PhotoFields.TAGS, queryTerms[i]);
+        }
+
+        return new MultiPhraseQuery
+                .Builder()
+                .add(terms)
+                .build();
     }
 
-    public int getNumberOfTimesInCollection(String field, String term) throws IOException {
+    public int getTotalNumberOfTimesInCollection(String field, String term) throws IOException {
         return (int) indexReader.totalTermFreq(new Term(field, term));
+    }
+
+    public int getTotalNumberOfTermsInCollection(String field) throws IOException {
+        return (int) indexReader.getSumTotalTermFreq(field);
     }
 
     private Photo[] getPhotosFromTopDocs(TopDocs topDocuments) throws IOException {
