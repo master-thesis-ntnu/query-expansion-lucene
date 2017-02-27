@@ -11,14 +11,18 @@ import java.util.HashMap;
 
 public class QueryExpansion {
     private Photo[] photos;
+    private Searcher searcher;
+    private String originalQuery;
+    private QueryUtil queryUtil;
+
     private HashMap<String, TermData> terms;
     private int totalNumberOfTermsInTopKDocuments;
     private int totalNumberOfTermsInCollection;
-    private Searcher searcher;
 
-    public QueryExpansion(Photo[] photos, Searcher searcher) {
-        this.photos = photos;
+    public QueryExpansion(Photo[] firstPhotoResult, String originalQuery, Searcher searcher) {
+        this.photos = firstPhotoResult;
         this.searcher = searcher;
+        this.originalQuery = originalQuery;
 
         terms = new HashMap<String, TermData>();
     }

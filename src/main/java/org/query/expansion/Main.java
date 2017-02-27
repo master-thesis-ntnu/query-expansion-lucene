@@ -26,8 +26,9 @@ public class Main {
 
         searcher.openIndexReaderAndSearcher();
         Photo[] photos = searcher.search(queryString);
-        QueryExpansion queryExpansion = new QueryExpansion(photos, searcher);
+        QueryExpansion queryExpansion = new QueryExpansion(photos, queryString, searcher);
         queryExpansion.getQueryExpandedTerms();
+        // Photo[] photos = searcher.search();
 
         searcher.closeIndexReader();
     }
