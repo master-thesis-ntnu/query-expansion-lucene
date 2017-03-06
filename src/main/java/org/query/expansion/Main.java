@@ -1,8 +1,10 @@
 package org.query.expansion;
 
+import org.apache.lucene.search.MultiPhraseQuery;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.query.expansion.models.Photo;
+import org.query.expansion.models.Tag;
 
 import java.io.IOException;
 
@@ -25,12 +27,23 @@ public class Main {
         Searcher searcher = new Searcher(index);
 
         searcher.openIndexReaderAndSearcher();
-        Photo[] photos = searcher.search(queryString);
-        QueryExpansion queryExpansion = new QueryExpansion(photos, queryString, searcher);
-        queryExpansion.getQueryExpandedTerms();
-        // Photo[] photos = searcher.search();
+        Photo[] initialPhotoResult = searcher.search(queryString);
+
+        QueryExpansion queryExpansion = new QueryExpansion(initialPhotoResult, queryString, searcher);
+        MultiPhraseQuery multiPhraseQuery = queryExpansion.getQueryExpandedMultiPhraseQuery();
+        Photo[] queryExpandedPhotoResults = searcher.search(multiPhraseQuery);
 
         searcher.closeIndexReader();
+
+        for (Photo photo : queryExpandedPhotoResults) {
+            String tags = "";
+
+            for (Tag tag : photo.getTags()) {
+                tags += tag.getContent() + ", ";
+            }
+
+            System.out.println(tags);
+        }
     }
 
     private static void search(Directory index) throws IOException {

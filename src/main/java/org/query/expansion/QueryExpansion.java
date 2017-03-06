@@ -1,5 +1,6 @@
 package org.query.expansion;
 
+import org.apache.lucene.search.MultiPhraseQuery;
 import org.query.expansion.models.Photo;
 import org.query.expansion.models.Tag;
 import org.query.expansion.models.TermData;
@@ -24,10 +25,11 @@ public class QueryExpansion {
         this.searcher = searcher;
         this.originalQuery = originalQuery;
 
+        queryUtil = new QueryUtil(originalQuery);
         terms = new HashMap<String, TermData>();
     }
 
-    public String[] getQueryExpandedTerms() {
+    public MultiPhraseQuery getQueryExpandedMultiPhraseQuery() {
         try {
             generateTermDataFromPhotosArray();
             totalNumberOfTermsInCollection = searcher.getTotalNumberOfTermsInCollection(PhotoFields.TAGS);
@@ -45,16 +47,18 @@ public class QueryExpansion {
             index++;
         }
 
-        Arrays.sort(calculatedKlScores);
-
-        for (TermData termData : calculatedKlScores) {
+        /*for (TermData termData : calculatedKlScores) {
             System.out.println(termData.getTerm() + ": " + termData.getKlScore());
         }
 
         System.out.println("Terms in hashmap: " + terms.size());
         System.out.println("Number of photos in the result: " + photos.length);
-        System.out.println("Number of terms in top-k documents: " + totalNumberOfTermsInTopKDocuments);
-        return null;
+        System.out.println("Number of terms in top-k documents: " + totalNumberOfTermsInTopKDocuments);*/
+
+        Arrays.sort(calculatedKlScores);
+        queryUtil.setScoredTerms(calculatedKlScores);
+
+        return queryUtil.getExpandedMultiPhraseQuery();
     }
 
     private void generateTermDataFromPhotosArray() throws IOException {
