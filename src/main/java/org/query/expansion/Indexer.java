@@ -50,7 +50,7 @@ public class Indexer {
         while ((line = bufferedReader.readLine()) != null) {
             indexDocument(Photo.fromJson(line));
 
-            if (counter == 1000) {
+            if (counter == 10000) {
                 break;
             }
 

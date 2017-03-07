@@ -9,7 +9,7 @@ import org.query.expansion.util.ElapsedTime;
 import java.io.IOException;
 
 public class Main {
-    private static final int NUMBER_OF_TEST_RUNS = 100;
+    private static final int NUMBER_OF_TEST_RUNS = 1000;
 
     public static void main(String[] args) {
         Directory index = new RAMDirectory();
@@ -41,12 +41,12 @@ public class Main {
             queryExpansionSearch(index, queryString);
             elapsedTime.stop();
 
-            sumOfDeltaTimes += elapsedTime.getElapsedTimeInMilliSeconds();
+            sumOfDeltaTimes += elapsedTime.getElapsedTimeInMicroSeconds();
         }
         long averageDeltaTime = sumOfDeltaTimes / NUMBER_OF_TEST_RUNS;
 
         System.out.println("Number of test runs: " + NUMBER_OF_TEST_RUNS);
-        System.out.println("Average query expansion search time: " + averageDeltaTime + "ms");
+        System.out.println("Average query expansion search time: " + averageDeltaTime + " microseconds");
     }
 
     private static void runSearchTests(Directory index, String queryString) throws IOException {
@@ -58,12 +58,12 @@ public class Main {
             search(index, queryString);
             elapsedTime.stop();
 
-            sumOfDeltaTimes += elapsedTime.getElapsedTimeInMilliSeconds();
+            sumOfDeltaTimes += elapsedTime.getElapsedTimeInMicroSeconds();
         }
         long averageDeltaTime = sumOfDeltaTimes / NUMBER_OF_TEST_RUNS;
 
         System.out.println("Number of test runs: " + NUMBER_OF_TEST_RUNS);
-        System.out.println("Average search time: " + averageDeltaTime + "ms");
+        System.out.println("Average search time: " + averageDeltaTime + " microseconds");
     }
 
     private static Photo[] queryExpansionSearch(Directory index, String queryString) throws IOException {

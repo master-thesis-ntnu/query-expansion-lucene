@@ -6,6 +6,7 @@ public class ElapsedTime {
     private boolean running = false;
 
     private static final long NANOSECONDS_TO_MILLIISECONDS = 1000000;
+    private static final long MICROSECONDS_TO_MILLIISECONDS = 1000;
 
     public void start() {
         startTime = System.nanoTime();
@@ -26,5 +27,16 @@ public class ElapsedTime {
         }
 
         return deltaTime / NANOSECONDS_TO_MILLIISECONDS;
+    }
+
+    public long getElapsedTimeInMicroSeconds() {
+        long deltaTime;
+        if (running) {
+            deltaTime =  System.nanoTime() - startTime;
+        } else {
+            deltaTime = endTime - startTime;
+        }
+
+        return deltaTime / MICROSECONDS_TO_MILLIISECONDS;
     }
 }
