@@ -3,7 +3,6 @@ package org.query.expansion.models;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import org.apache.lucene.document.*;
-import org.query.expansion.TagField;
 import org.query.expansion.values.PhotoFields;
 
 import java.util.ArrayList;
@@ -14,15 +13,15 @@ public class Photo {
     private String dateUploaded;
     private String title;
     private String url;
-    private ArrayList<Tag> tags;
+    private ArrayList<String> tags;
 
     public Photo(Document document) {
         title = document.get(PhotoFields.TITLE);
         url = document.get(PhotoFields.URL);
-        tags = new ArrayList<Tag>();
+        tags = new ArrayList<String>();
 
         for(String tag: document.getValues(PhotoFields.TAGS)) {
-            tags.add(new Tag(tag));
+            tags.add(tag);
         }
     }
 
@@ -41,15 +40,15 @@ public class Photo {
         Field titleField = new TextField(PhotoFields.TITLE, title, Field.Store.YES);
         document.add(titleField);
 
-        for (Tag tag : tags) {
-            Field tagsField = new TagField(PhotoFields.TAGS, tag.getContent());
+        for (String tag : tags) {
+            Field tagsField = new TextField(PhotoFields.TAGS, tag, Field.Store.YES);
             document.add(tagsField);
         }
 
         return document;
     }
 
-    public ArrayList<Tag> getTags() {
+    public ArrayList<String> getTags() {
         return tags;
     }
 

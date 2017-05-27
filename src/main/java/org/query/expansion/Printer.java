@@ -1,7 +1,6 @@
 package org.query.expansion;
 
 import org.query.expansion.models.Photo;
-import org.query.expansion.models.Tag;
 
 public class Printer {
     public static void printResult(Photo[] photos) {
@@ -17,8 +16,8 @@ public class Printer {
         System.out.println(photo.getTitle());
 
         String tags = "Tags: ";
-        for (Tag tag : photo.getTags()) {
-            tags += tag.getContent() + ", ";
+        for (String tag : photo.getTags()) {
+            tags += tag + ", ";
         }
         System.out.println(tags);
 

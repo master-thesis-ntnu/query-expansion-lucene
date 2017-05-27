@@ -26,8 +26,8 @@ public class Searcher {
         return search(queryString, DEFAULT_NUMBER_OF_HITS);
     }
 
-    public Photo[] search(Query query) throws IOException {
-        TopDocs topDocuments = indexSearcher.search(query, DEFAULT_NUMBER_OF_HITS);
+    public Photo[] search(Query query, int numberOfResults) throws IOException {
+        TopDocs topDocuments = indexSearcher.search(query, numberOfResults);
 
         return getPhotosFromTopDocs(topDocuments);
     }

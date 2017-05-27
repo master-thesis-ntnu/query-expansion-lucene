@@ -1,12 +1,11 @@
 package org.query.expansion.util;
 
+import java.util.concurrent.TimeUnit;
+
 public class ElapsedTime {
     private long startTime;
     private long endTime;
     private boolean running = false;
-
-    private static final long NANOSECONDS_TO_MILLIISECONDS = 1000000;
-    private static final long MICROSECONDS_TO_MILLIISECONDS = 1000;
 
     public void start() {
         startTime = System.nanoTime();
@@ -26,7 +25,7 @@ public class ElapsedTime {
             deltaTime = endTime - startTime;
         }
 
-        return deltaTime / NANOSECONDS_TO_MILLIISECONDS;
+        return TimeUnit.NANOSECONDS.toMillis(deltaTime);
     }
 
     public long getElapsedTimeInMicroSeconds() {
@@ -37,6 +36,17 @@ public class ElapsedTime {
             deltaTime = endTime - startTime;
         }
 
-        return deltaTime / MICROSECONDS_TO_MILLIISECONDS;
+        return TimeUnit.NANOSECONDS.toMicros(deltaTime);
+    }
+
+    public long getElapsedTimeInNanoSeconds() {
+        long deltaTime;
+        if (running) {
+            deltaTime = System.nanoTime() - startTime;
+        } else {
+            deltaTime = endTime - startTime;
+        }
+
+        return deltaTime;
     }
 }

@@ -2,7 +2,6 @@ package org.query.expansion;
 
 import org.apache.lucene.search.MultiPhraseQuery;
 import org.query.expansion.models.Photo;
-import org.query.expansion.models.Tag;
 import org.query.expansion.models.TermData;
 import org.query.expansion.values.PhotoFields;
 
@@ -64,8 +63,8 @@ public class QueryExpansion {
     private void generateTermDataFromPhotosArray() throws IOException {
 
         for (Photo photo : photos) {
-            for (Tag tag : photo.getTags()) {
-                String term = tag.getContent();
+            for (String tag : photo.getTags()) {
+                String term = tag;
 
                 if (terms.containsKey(term)) {
                     terms.get(term).incrementNumberOfTimesInTopKDocuments();

@@ -8,7 +8,6 @@ import org.query.expansion.models.TermData;
 import org.query.expansion.values.PhotoFields;
 
 public class QueryUtil {
-    private String queryString;
     private String[] originalQueryTerms;
     private TermData[] scoredTerms;
 
@@ -16,7 +15,6 @@ public class QueryUtil {
     private static final int MAX_NUMBER_OF_SEARCH_TERMS = 5;
 
     public QueryUtil(String queryString) {
-        this.queryString = queryString;
         originalQueryTerms = queryString.split(SPLIT_CHARACTER);
     }
 
@@ -82,9 +80,9 @@ public class QueryUtil {
     }
 
     private int getSizeOfNewQueryTerms() {
-        int combinedTermSize = originalQueryTerms.length + scoredTerms.length;
+        int newTermsSize = scoredTerms.length;
 
-        return combinedTermSize > MAX_NUMBER_OF_SEARCH_TERMS? MAX_NUMBER_OF_SEARCH_TERMS : combinedTermSize;
+        return newTermsSize > MAX_NUMBER_OF_SEARCH_TERMS? MAX_NUMBER_OF_SEARCH_TERMS : newTermsSize;
     }
 
     private String[] splitStringOnCharacter(String string, String splitCharacter) {
