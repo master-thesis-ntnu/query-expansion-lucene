@@ -14,12 +14,12 @@ import java.nio.file.Paths;
 
 public class Main {
     private static final int NUMBER_OF_TEST_RUNS = 10;
-    private static final int NUMBER_OF_CACHE_WARMING_RUNS = 10;
+    private static final int NUMBER_OF_CACHE_WARMING_RUNS = 0;
     private static Path path = Paths.get("/home/jonas/git/query-expansion/data/lucene.index");
     private static String CACHE_WARMING_QUERY = "square insta";
     private static String TEST_QUERY = "blue sky";
     private static int[] resultSizes = {
-            10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200
+            10//, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200
     };
 
     public static void main(String[] args) {
