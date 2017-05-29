@@ -6,23 +6,24 @@ import org.apache.lucene.document.*;
 import org.query.expansion.values.PhotoFields;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Photo {
     private String id;
     @SerializedName("dateuploaded")
     private String dateUploaded;
     private String title;
-    private String url;
+    private String description;
+    private ArrayList<String> urls;
     private ArrayList<String> tags;
 
     public Photo(Document document) {
         title = document.get(PhotoFields.TITLE);
-        url = document.get(PhotoFields.URL);
-        tags = new ArrayList<String>();
+        urls = new ArrayList<>();
+        tags = new ArrayList<>();
 
-        for(String tag: document.getValues(PhotoFields.TAGS)) {
-            tags.add(tag);
-        }
+        Collections.addAll(tags, document.getValues(PhotoFields.TAGS));
+        Collections.addAll(urls, document.getValues(PhotoFields.URL));
     }
 
     public Document getLuceneDocument() {
@@ -31,14 +32,20 @@ public class Photo {
         Field idField = new StringField(PhotoFields.ID, id, Field.Store.YES);
         document.add(idField);
 
+        Field titleField = new TextField(PhotoFields.TITLE, title, Field.Store.YES);
+        document.add(titleField);
+
+        Field descriptionField = new TextField(PhotoFields.DESCRIPTION, description, Field.Store.YES);
+        document.add(descriptionField);
+
         Field dateUploadedField = new LongPoint(PhotoFields.DATE_UPLOADED, getDateUploadedAsLong());
         document.add(dateUploadedField);
 
-        //Field urlField = new StringField(PhotoFields.URL, url, Field.Store.NO);
-        //document.add(urlField);
 
-        Field titleField = new TextField(PhotoFields.TITLE, title, Field.Store.YES);
-        document.add(titleField);
+        for (String url : urls) {
+            Field urlsField = new StringField(PhotoFields.URL, url, Field.Store.YES);
+            document.add(urlsField);
+        }
 
         for (String tag : tags) {
             Field tagsField = new TextField(PhotoFields.TAGS, tag, Field.Store.YES);

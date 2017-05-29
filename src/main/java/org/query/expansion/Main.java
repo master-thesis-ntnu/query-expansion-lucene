@@ -13,13 +13,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Main {
-    private static final int NUMBER_OF_TEST_RUNS = 10;
-    private static final int NUMBER_OF_CACHE_WARMING_RUNS = 0;
+    private static final int NUMBER_OF_TEST_RUNS = 10000;
+    private static final int NUMBER_OF_CACHE_WARMING_RUNS = 10000;
     private static Path path = Paths.get("/home/jonas/git/query-expansion/data/lucene.index");
     private static String CACHE_WARMING_QUERY = "square insta";
     private static String TEST_QUERY = "blue sky";
     private static int[] resultSizes = {
-            10//, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200
+            10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200
     };
 
     public static void main(String[] args) {
@@ -47,55 +47,46 @@ public class Main {
         Directory index;
         Searcher searcher;
 
-        for (int resultSize : resultSizes) {
-            try {
-                // Open new connections to make sure cache is clean
-                index = FSDirectory.open(path);
-                searcher = new Searcher(index);
-                searcher.openIndexReaderAndSearcher();
+        try {
+            index = FSDirectory.open(path);
+            searcher = new Searcher(index);
+            searcher.openIndexReaderAndSearcher();
+
+            warmCache(searcher, CACHE_WARMING_QUERY, NUMBER_OF_CACHE_WARMING_RUNS, SearchTypes.MULTI_TERM_SEARCH);
+
+            for (int resultSize : resultSizes) {
+                System.out.println("Round: " + resultSize);
 
                 // Run baseline tests
-                warmCache(searcher, CACHE_WARMING_QUERY, NUMBER_OF_CACHE_WARMING_RUNS, SearchTypes.MULTI_TERM_SEARCH);
                 System.out.println("Running baseline tests..");
                 runSearchTests(searcher, TEST_QUERY, resultSize);
                 System.out.println("Done");
 
-                // Close everything to make sure cache is gone before next run
-                searcher.closeIndexReader();
-                index.close();
-
-                // Open new connections to make sure cache is clean
-                index = FSDirectory.open(path);
-                searcher = new Searcher(index);
-                searcher.openIndexReaderAndSearcher();
 
                 // Run query expansion tests
-                warmCache(searcher, CACHE_WARMING_QUERY, NUMBER_OF_CACHE_WARMING_RUNS, SearchTypes.QUERY_EXPANSION_SEARCH);
                 System.out.println("Running query expansion tests..");
                 runQueryExpansionSearchTests(searcher, TEST_QUERY, resultSize);
                 System.out.println("Done");
-
-                // Close everything to make sure cache is gone before next run
-                searcher.closeIndexReader();
-                index.close();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
             }
+
+            searcher.closeIndexReader();
+            index.close();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
         }
     }
 
     private static void warmCache(Searcher searcher, String query, int numberOfWarmingRuns, int searchType) throws IOException {
         System.out.println("Warming cache...");
+
         for (int i = 0; i < numberOfWarmingRuns; i++) {
-            switch (searchType) {
-                case SearchTypes.MULTI_TERM_SEARCH:
-                    searcher.search(query);
-                    break;
-                case SearchTypes.QUERY_EXPANSION_SEARCH:
-                    queryExpansionSearch(searcher, query, 10);
-                    break;
+            if (i % 2 == 0) {
+                searcher.search(query);
+            } else {
+                queryExpansionSearch(searcher, query, 10);
             }
         }
+
         System.out.println("Done");
     }
 
